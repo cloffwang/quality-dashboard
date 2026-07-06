@@ -15,10 +15,12 @@ permissions:
 jobs:
   api-tests:
     runs-on: ubuntu-latest
+    env:
+      AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6.4.0
         with:
           node-version: 20
           cache: npm
@@ -48,7 +50,7 @@ jobs:
 
       - name: Upload raw test artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: api-test-artifacts
           path: |
@@ -59,7 +61,7 @@ jobs:
       - name: Check out gh-pages history
         if: always()
         continue-on-error: true
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7.0.0
         with:
           ref: gh-pages
           path: gh-pages
@@ -89,3 +91,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
           publish_dir: allure-history
+          allow_empty_commit: true

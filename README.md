@@ -1,5 +1,8 @@
 # Quality & Uptime Control Center
 
+[![UI Tests](https://github.com/cloffwang/quality-dashboard/actions/workflows/ui-tests.yml/badge.svg)](https://github.com/cloffwang/quality-dashboard/actions/workflows/ui-tests.yml)
+[![API Tests](https://github.com/cloffwang/quality-dashboard/actions/workflows/api-tests.yml/badge.svg)](https://github.com/cloffwang/quality-dashboard/actions/workflows/api-tests.yml)
+
 A portfolio project: a mock "Quality & Uptime Control Center" status dashboard, paired
 with a Playwright test suite that exercises it end-to-end. Built to demonstrate SDET
 skills — test design and automation against a realistic app, not just unit tests against
@@ -24,14 +27,28 @@ Which state you see is driven by which mock account you log in as
 dashboard-server/   Next.js 14+ App Router app — the dashboard itself, fully mocked
 tests/              Playwright (TypeScript) suite — page objects, per-mock-user auth
                     setup, ui/ and api/ specs — runs against the launched server
+.github/workflows/  Scheduled CI (every 4 hours + on demand) — publishes Allure reports
 ```
+
+## Live Allure reports
+
+The `ui-tests` and `api-tests` workflows publish live Allure reports (with run history)
+to GitHub Pages:
+
+- **Landing page:** https://cloffwang.github.io/quality-dashboard/
+- **UI Tests report:** https://cloffwang.github.io/quality-dashboard/ui-report/
+- **API Tests report:** https://cloffwang.github.io/quality-dashboard/api-report/
+
+See [designs/allure-technical-design.md](designs/allure-technical-design.md) for how
+reporting and the CI/Pages publish flow are wired up.
 
 ## Status
 
 - `dashboard-server/` — built and verified.
 - `tests/` — backbone built and verified (page objects, auth setup, example specs across
   ui/ and api/).
-- GitHub Actions CI workflow — in progress.
+- GitHub Actions CI — two scheduled workflows publishing live Allure reports to GitHub
+  Pages (badges above).
 
 ## License
 
