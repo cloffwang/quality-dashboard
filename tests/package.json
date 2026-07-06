@@ -7,11 +7,14 @@
     "test:ui": "playwright test --project=ui",
     "test:api": "playwright test --project=api",
     "test:headed": "playwright test --headed",
-    "report": "playwright show-report"
+    "report": "playwright show-report",
+    "lint:allure": "node scripts/checkAllureDescriptions.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.1",
     "@types/node": "^26.1.0",
+    "allure-js-commons": "^3.10.2",
+    "allure-playwright": "^3.10.2",
     "typescript": "^5"
   }
 }
