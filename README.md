@@ -15,19 +15,23 @@ data so both a healthy and a degraded state can be demonstrated on demand:
 
 Which state you see is driven by which mock account you log in as
 (`ok@example.com` → healthy, `outage@example.com` → degraded/outage) — see
-[dashboard-server/README.md](dashboard-server/README.md) for credentials and setup.
+[dashboard-server/README.md](dashboard-server/README.md) for credentials and setup, and
+[tests/README.md](tests/README.md) for running the test suite.
 
 ## Structure
 
 ```
 dashboard-server/   Next.js 14+ App Router app — the dashboard itself, fully mocked
-tests/              Playwright suite (in progress) — runs against the launched server
+tests/              Playwright (TypeScript) suite — page objects, per-mock-user auth
+                    setup, ui/ and api/ specs — runs against the launched server
 ```
 
 ## Status
 
 - `dashboard-server/` — built and verified.
-- `tests/` and the GitHub Actions CI workflow — in progress.
+- `tests/` — backbone built and verified (page objects, auth setup, example specs across
+  ui/ and api/).
+- GitHub Actions CI workflow — in progress.
 
 ## License
 

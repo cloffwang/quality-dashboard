@@ -23,11 +23,16 @@ export function ServiceCard({
   return (
     <Link
       href={`/services/${id}`}
+      data-testid="service-card"
+      data-service-id={id}
       className="block rounded-lg border border-neutral-800 bg-neutral-900 p-4 transition hover:border-neutral-700 hover:bg-neutral-800/60"
     >
       <div className="flex items-center justify-between">
         <span className="text-xs uppercase tracking-wide text-neutral-500">{domainLabel}</span>
-        <span className={`rounded-full border px-2 py-0.5 text-xs font-medium ${statusStyles[status]}`}>
+        <span
+          data-testid="service-status"
+          className={`rounded-full border px-2 py-0.5 text-xs font-medium ${statusStyles[status]}`}
+        >
           {status}
         </span>
       </div>
