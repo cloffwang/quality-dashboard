@@ -1,0 +1,5 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"Posting a valid mock user's email/password plus a fresh csrf token to the credentials callback redirects (302), indicating a successful login.","58","credentials callback authenticates a valid mock user","API Tests","2026-07-10","passed","2026-07-10","Auth.js API routes","","",""
+"Posting the wrong password to the credentials callback redirects back with an ""error"" query param instead of authenticating.","49","credentials callback rejects an invalid password","API Tests","2026-07-10","passed","2026-07-10","Auth.js API routes","","",""
+"An unauthenticated request to the session endpoint returns a null session, not an error.","37","GET /api/auth/session returns null when unauthenticated","API Tests","2026-07-10","passed","2026-07-10","Auth.js API routes","","",""
+"The csrf endpoint always returns a non-empty token, required to authenticate the credentials callback.","1166","GET /api/auth/csrf returns a csrf token","API Tests","2026-07-10","passed","2026-07-10","Auth.js API routes","","",""
