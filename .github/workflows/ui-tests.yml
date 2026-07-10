@@ -3,11 +3,12 @@ name: UI Tests
 on:
   schedule:
     - cron: '0 */4 * * *'
+  pull_request:
   workflow_dispatch:
 
 concurrency:
-  group: gh-pages-ui
-  cancel-in-progress: false
+  group: gh-pages-ui-${{ github.event_name == 'pull_request' && github.ref || 'scheduled' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: write
@@ -59,7 +60,7 @@ jobs:
           retention-days: 14
 
       - name: Check out gh-pages history
-        if: always()
+        if: always() && github.event_name != 'pull_request'
         continue-on-error: true
         uses: actions/checkout@v7.0.0
         with:
@@ -67,13 +68,13 @@ jobs:
           path: gh-pages
 
       - name: Seed GitHub Pages landing page
-        if: always()
+        if: always() && github.event_name != 'pull_request'
         run: |
           mkdir -p gh-pages
           cp .github/pages/index.html gh-pages/index.html
 
       - name: Generate Allure report with history
-        if: always()
+        if: always() && github.event_name != 'pull_request'
         uses: simple-elf/allure-report-action@v1.14
         with:
           allure_results: tests/allure-results
@@ -85,7 +86,7 @@ jobs:
           report_name: 'Quality Dashboard — UI Tests'
 
       - name: Deploy report to GitHub Pages
-        if: always()
+        if: always() && github.event_name != 'pull_request'
         uses: peaceiris/actions-gh-pages@v4.1.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
