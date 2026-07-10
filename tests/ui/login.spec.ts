@@ -1,4 +1,4 @@
-import { test, expect } from './fixtures';
+import { test } from './fixtures';
 import { description } from 'allure-js-commons';
 import { LoginPage } from '../pages/LoginPage';
 import { DashboardPage } from '../pages/DashboardPage';
@@ -38,7 +38,7 @@ test.describe('login', () => {
     });
 
     await test.step('assert error message is shown', async () => {
-      await expect(loginPage.errorMessage).toBeVisible();
+      await loginPage.expectError();
       await stepScreenshot(page, 'error message visible');
     });
   });
@@ -60,7 +60,7 @@ test.describe('login', () => {
     });
 
     await test.step('assert dashboard renders service cards', async () => {
-      await expect(dashboardPage.serviceCards().first()).toBeVisible();
+      await dashboardPage.expectServiceCardsVisible();
       await stepScreenshot(page, 'dashboard after login');
     });
   });

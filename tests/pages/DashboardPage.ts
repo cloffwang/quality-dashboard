@@ -1,4 +1,11 @@
-import { Page, Locator } from '@playwright/test';
+import { Page, Locator, expect } from '@playwright/test';
+
+const DOMAIN_LABELS = [
+  'Frontend Smoke Tests',
+  'Gateway API Tests',
+  'ETL Validation',
+  'MCP Protocol Assertions',
+];
 
 export class DashboardPage {
   readonly page: Page;
@@ -23,5 +30,28 @@ export class DashboardPage {
 
   serviceCard(serviceId: string): Locator {
     return this.page.locator(`[data-testid="service-card"][data-service-id="${serviceId}"]`);
+  }
+
+  async expectAllDomainSectionsVisible() {
+    for (const label of DOMAIN_LABELS) {
+      await expect(this.sectionHeading(label)).toBeVisible();
+    }
+  }
+
+  async expectServiceCardCount(count: number) {
+    await expect(this.serviceCards()).toHaveCount(count);
+  }
+
+  async expectServiceCardsVisible() {
+    await expect(this.serviceCards().first()).toBeVisible();
+  }
+
+  async expectAllServicesOperational() {
+    const statuses = await this.serviceCards().getByTestId('service-status').allTextContents();
+
+    expect(statuses).toHaveLength(8);
+    for (const status of statuses) {
+      expect(status.trim()).toBe('operational');
+    }
   }
 }

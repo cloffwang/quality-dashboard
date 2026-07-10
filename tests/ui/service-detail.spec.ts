@@ -1,4 +1,4 @@
-import { test, expect } from './fixtures';
+import { test } from './fixtures';
 import { description } from 'allure-js-commons';
 import { ServiceDetailPage } from '../pages/ServiceDetailPage';
 import { stepScreenshot } from '../helpers/allure';
@@ -15,8 +15,8 @@ test.describe('service detail (healthy profile)', () => {
     });
 
     await test.step('assert heading and normal P95 latency', async () => {
-      await expect(detail.heading).toHaveText('Gateway API');
-      await expect(detail.statValue('P95 latency')).not.toContainText('4500');
+      await detail.expectHeading('Gateway API');
+      await detail.expectStatValueNot('P95 latency', '4500');
     });
   });
 
@@ -31,7 +31,7 @@ test.describe('service detail (healthy profile)', () => {
     });
 
     await test.step('assert quarantine log is empty', async () => {
-      await expect(detail.quarantineLog).toContainText('No quarantined rows.');
+      await detail.expectNoQuarantinedRows();
     });
   });
 });
@@ -50,8 +50,7 @@ test.describe('service detail (outage profile)', () => {
     });
 
     await test.step('assert the stack trace panel is visible with an AssertionError', async () => {
-      await expect(detail.stackTracePanel).toBeVisible();
-      await expect(detail.stackTracePanel).toContainText('AssertionError');
+      await detail.expectStackTrace('AssertionError');
       await stepScreenshot(page, 'stack trace panel visible');
     });
   });
@@ -67,7 +66,7 @@ test.describe('service detail (outage profile)', () => {
     });
 
     await test.step('assert P95 latency shows the spike', async () => {
-      await expect(detail.statValue('P95 latency')).toContainText('4500');
+      await detail.expectStatValue('P95 latency', '4500');
     });
   });
 
@@ -82,7 +81,7 @@ test.describe('service detail (outage profile)', () => {
     });
 
     await test.step('assert two quarantine entries are listed', async () => {
-      await expect(detail.quarantineEntries).toHaveCount(2);
+      await detail.expectQuarantineEntryCount(2);
       await stepScreenshot(page, 'quarantine entries listed');
     });
   });
