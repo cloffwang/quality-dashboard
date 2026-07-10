@@ -1,4 +1,4 @@
-import { test, expect } from './fixtures';
+import { test } from './fixtures';
 import { description } from 'allure-js-commons';
 import { DashboardPage } from '../pages/DashboardPage';
 import { stepScreenshot } from '../helpers/allure';
@@ -15,14 +15,11 @@ test.describe('dashboard index (healthy profile)', () => {
     });
 
     await test.step('assert all four domain section headings are visible', async () => {
-      await expect(dashboardPage.sectionHeading('Frontend Smoke Tests')).toBeVisible();
-      await expect(dashboardPage.sectionHeading('Gateway API Tests')).toBeVisible();
-      await expect(dashboardPage.sectionHeading('ETL Validation')).toBeVisible();
-      await expect(dashboardPage.sectionHeading('MCP Protocol Assertions')).toBeVisible();
+      await dashboardPage.expectAllDomainSectionsVisible();
     });
 
     await test.step('assert 8 service cards are rendered', async () => {
-      await expect(dashboardPage.serviceCards()).toHaveCount(8);
+      await dashboardPage.expectServiceCardCount(8);
       await stepScreenshot(page, 'all service cards rendered');
     });
   });
@@ -37,15 +34,7 @@ test.describe('dashboard index (healthy profile)', () => {
     });
 
     await test.step('assert every service card status is "operational"', async () => {
-      const statuses = await dashboardPage
-        .serviceCards()
-        .getByTestId('service-status')
-        .allTextContents();
-
-      expect(statuses).toHaveLength(8);
-      for (const status of statuses) {
-        expect(status.trim()).toBe('operational');
-      }
+      await dashboardPage.expectAllServicesOperational();
       await stepScreenshot(page, 'all statuses operational');
     });
   });
