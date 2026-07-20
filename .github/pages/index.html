@@ -13,6 +13,8 @@
       --card: #151822;
       --border: #262b38;
       --accent: #7dd3fc;
+      --ok: #4ade80;
+      --fail: #f87171;
     }
     @media (prefers-color-scheme: light) {
       :root {
@@ -22,6 +24,8 @@
         --card: #ffffff;
         --border: #e2e5ea;
         --accent: #0369a1;
+        --ok: #16a34a;
+        --fail: #dc2626;
       }
     }
     * { box-sizing: border-box; }
@@ -31,15 +35,18 @@
       background: var(--bg);
       color: var(--fg);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
+      padding: 2rem 1rem;
     }
-    main { max-width: 640px; width: 100%; }
+    main { max-width: 900px; margin: 0 auto; }
     h1 { font-size: 1.5rem; margin: 0 0 0.25rem; }
     p.lede { color: var(--muted); margin: 0 0 2rem; }
-    .cards { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+
+    .latest {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      margin-bottom: 2.5rem;
+    }
     a.card {
       display: block;
       padding: 1.25rem;
@@ -52,24 +59,250 @@
     a.card:hover { border-color: var(--accent); }
     a.card h2 { margin: 0 0 0.35rem; font-size: 1.1rem; color: var(--accent); }
     a.card p { margin: 0; color: var(--muted); font-size: 0.9rem; }
-    footer { margin-top: 2rem; color: var(--muted); font-size: 0.8rem; }
+
+    h1.calendar-title { font-size: 1.15rem; margin: 0 0 1rem; }
+
+    .week-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .week-nav button {
+      background: var(--card);
+      color: var(--fg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.4rem 0.9rem;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    .week-nav button:hover { border-color: var(--accent); }
+    .week-nav span { color: var(--muted); font-size: 0.9rem; min-width: 13rem; text-align: center; }
+
+    .module { margin-bottom: 2rem; }
+    .module h2 { font-size: 1.05rem; margin: 0 0 0.75rem; }
+    .module .status { color: var(--muted); font-size: 0.85rem; margin: 0 0 0.5rem; }
+
+    .days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.5rem;
+    }
+    .day {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--card);
+      padding: 0.6rem;
+    }
+    .day summary {
+      cursor: pointer;
+      list-style: none;
+    }
+    .day summary::-webkit-details-marker { display: none; }
+    .day .date { color: var(--muted); font-size: 0.75rem; display: block; margin-bottom: 0.35rem; }
+    .day .dots { display: flex; gap: 3px; flex-wrap: wrap; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex: none; }
+    .dot.success { background: var(--ok); }
+    .dot.failure { background: var(--fail); }
+    .dot.other { background: var(--muted); }
+    .day .empty { color: var(--muted); font-size: 0.75rem; }
+    .day ul { list-style: none; margin: 0.5rem 0 0; padding: 0; display: flex; flex-direction: column; gap: 0.35rem; }
+    .day li a {
+      color: var(--fg);
+      text-decoration: none;
+      font-size: 0.78rem;
+      display: flex;
+      gap: 0.35rem;
+      align-items: center;
+    }
+    .day li a:hover { color: var(--accent); }
+
+    footer { margin-top: 2rem; color: var(--muted); font-size: 0.8rem; text-align: center; }
+
+    @media (max-width: 640px) {
+      .days { grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0.3rem; }
+      .day { padding: 0.4rem; font-size: 0.85rem; }
+    }
   </style>
 </head>
 <body>
   <main>
     <h1>Quality &amp; Uptime Control Center</h1>
     <p class="lede">Live Allure reports from the scheduled Playwright suite (runs every 4 hours, plus on demand).</p>
-    <div class="cards">
+
+    <div class="latest">
       <a class="card" href="./ui-report/index.html">
-        <h2>UI Tests</h2>
+        <h2>UI Tests — Latest</h2>
         <p>Browser suite — login, dashboard, service drill-downs.</p>
       </a>
       <a class="card" href="./api-report/index.html">
-        <h2>API Tests</h2>
+        <h2>API Tests — Latest</h2>
         <p>Auth.js route suite — csrf, session, credentials callback.</p>
       </a>
     </div>
+
+    <h1 class="calendar-title">Run history</h1>
+
+    <div class="week-nav">
+      <button id="prevWeek" type="button" aria-label="Previous week">◀</button>
+      <span id="weekLabel"></span>
+      <button id="nextWeek" type="button" aria-label="Next week">▶</button>
+    </div>
+
+    <div class="module" data-workflow="ui-tests.yml" data-subfolder="ui-report">
+      <h2>UI Tests</h2>
+      <p class="status">Loading…</p>
+      <div class="days"></div>
+    </div>
+
+    <div class="module" data-workflow="api-tests.yml" data-subfolder="api-report">
+      <h2>API Tests</h2>
+      <p class="status">Loading…</p>
+      <div class="days"></div>
+    </div>
+
     <footer>Generated by <code>ui-tests.yml</code> / <code>api-tests.yml</code> — quality-dashboard</footer>
   </main>
+
+  <script>
+    const REPO = 'cloffwang/quality-dashboard';
+    const DAY_MS = 24 * 60 * 60 * 1000;
+
+    function startOfWeek(date) {
+      const d = new Date(date);
+      d.setHours(0, 0, 0, 0);
+      const day = d.getDay(); // 0 = Sunday
+      const diff = (day === 0 ? -6 : 1) - day; // shift back to Monday
+      d.setDate(d.getDate() + diff);
+      return d;
+    }
+
+    function toDateStr(d) {
+      return d.toISOString().slice(0, 10);
+    }
+
+    function fmtShort(d) {
+      return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    }
+
+    function dotClass(conclusion) {
+      if (conclusion === 'success') return 'success';
+      if (conclusion === 'failure') return 'failure';
+      return 'other';
+    }
+
+    let weekStart = startOfWeek(new Date());
+
+    async function fetchRuns(workflow, start, end) {
+      const since = toDateStr(start);
+      const until = toDateStr(new Date(end.getTime() + DAY_MS - 1));
+      const url = `https://api.github.com/repos/${REPO}/actions/workflows/${workflow}/runs?created=${since}..${until}&per_page=100`;
+      const res = await fetch(url, { headers: { Accept: 'application/vnd.github+json' } });
+      if (!res.ok) throw new Error(`GitHub API ${res.status}`);
+      const body = await res.json();
+      // exclude_pull_requests only strips the pull_requests linkage field, it does not
+      // filter by trigger type — pull_request-triggered runs never publish a report
+      // (both workflows skip that step for that event), so filter them out here instead.
+      return (body.workflow_runs || []).filter((run) => run.event !== 'pull_request');
+    }
+
+    function renderModule(moduleEl, runs, weekStartDate) {
+      const subfolder = moduleEl.dataset.subfolder;
+      const daysEl = moduleEl.querySelector('.days');
+      daysEl.innerHTML = '';
+
+      const byDay = Array.from({ length: 7 }, () => []);
+      const weekStartMidnight = new Date(weekStartDate.getFullYear(), weekStartDate.getMonth(), weekStartDate.getDate());
+      for (const run of runs) {
+        const created = new Date(run.created_at);
+        const createdMidnight = new Date(created.getFullYear(), created.getMonth(), created.getDate());
+        const idx = Math.round((createdMidnight - weekStartMidnight) / DAY_MS);
+        if (idx >= 0 && idx < 7) byDay[idx].push(run);
+      }
+
+      for (let i = 0; i < 7; i++) {
+        const dayDate = new Date(weekStartMidnight.getTime() + i * DAY_MS);
+        const dayRuns = byDay[i].slice().sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+
+        const details = document.createElement('details');
+        details.className = 'day';
+
+        const summary = document.createElement('summary');
+        const dateSpan = document.createElement('span');
+        dateSpan.className = 'date';
+        dateSpan.textContent = fmtShort(dayDate);
+        summary.appendChild(dateSpan);
+
+        if (dayRuns.length === 0) {
+          const empty = document.createElement('span');
+          empty.className = 'empty';
+          empty.textContent = 'no runs';
+          summary.appendChild(empty);
+        } else {
+          const dots = document.createElement('span');
+          dots.className = 'dots';
+          for (const run of dayRuns) {
+            const dot = document.createElement('span');
+            dot.className = `dot ${dotClass(run.conclusion)}`;
+            dot.title = `${run.conclusion || run.status} — run #${run.run_number}`;
+            dots.appendChild(dot);
+          }
+          summary.appendChild(dots);
+        }
+        details.appendChild(summary);
+
+        if (dayRuns.length > 0) {
+          const ul = document.createElement('ul');
+          for (const run of dayRuns) {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = `./${subfolder}/${run.run_number}/index.html`;
+            const time = new Date(run.created_at).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+            const dot = document.createElement('span');
+            dot.className = `dot ${dotClass(run.conclusion)}`;
+            a.appendChild(dot);
+            a.appendChild(document.createTextNode(`${time} · #${run.run_number}`));
+            li.appendChild(a);
+            ul.appendChild(li);
+          }
+          details.appendChild(ul);
+        }
+
+        daysEl.appendChild(details);
+      }
+    }
+
+    async function loadWeek() {
+      const weekEnd = new Date(weekStart.getTime() + 6 * DAY_MS);
+      document.getElementById('weekLabel').textContent = `${fmtShort(weekStart)} – ${fmtShort(weekEnd)}`;
+
+      const modules = document.querySelectorAll('.module');
+      await Promise.all(Array.from(modules).map(async (moduleEl) => {
+        const statusEl = moduleEl.querySelector('.status');
+        statusEl.textContent = 'Loading…';
+        statusEl.style.display = '';
+        try {
+          const runs = await fetchRuns(moduleEl.dataset.workflow, weekStart, weekEnd);
+          renderModule(moduleEl, runs, weekStart);
+          statusEl.style.display = 'none';
+        } catch (err) {
+          statusEl.textContent = `Couldn't load runs (${err.message}). GitHub's unauthenticated API is rate-limited — try again shortly.`;
+        }
+      }));
+    }
+
+    document.getElementById('prevWeek').addEventListener('click', () => {
+      weekStart = new Date(weekStart.getTime() - 7 * DAY_MS);
+      loadWeek();
+    });
+    document.getElementById('nextWeek').addEventListener('click', () => {
+      weekStart = new Date(weekStart.getTime() + 7 * DAY_MS);
+      loadWeek();
+    });
+
+    loadWeek();
+  </script>
 </body>
 </html>
