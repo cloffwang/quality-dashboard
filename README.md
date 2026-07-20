@@ -13,6 +13,9 @@ toy functions. Three things it's meant to show:
    out every run, across both the UI and API suites, by day — the kind of at-a-glance
    status an SDET or engineering manager actually wants, rather than digging through
    individual CI logs one run at a time.
+
+   ![Run history calendar](docs/images/run-history-calendar.png)
+
 2. **Tests are organized into independent modules, one per feature area** — `ui/` and
    `api/` as top-level suites, and within each, one spec set per domain (frontend smoke,
    backend API, ETL, MCP). That separation is what lets the suite report status per
