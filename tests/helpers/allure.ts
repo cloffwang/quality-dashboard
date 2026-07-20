@@ -27,6 +27,7 @@ export async function attachApiExchange(opts: {
   method: string;
   requestHeaders?: Record<string, string>;
   requestBody?: unknown;
+  requestForm?: Record<string, string>;
   response: APIResponse;
 }): Promise<void> {
   const responseHeaders = opts.response.headers();
@@ -38,8 +39,9 @@ export async function attachApiExchange(opts: {
       method: opts.method,
       url: opts.response.url(),
       headers: toNameValueList(opts.requestHeaders),
-      body:
-        opts.requestBody === undefined
+      body: opts.requestForm
+        ? { contentType: 'application/x-www-form-urlencoded', form: toNameValueList(opts.requestForm) }
+        : opts.requestBody === undefined
           ? undefined
           : {
               contentType: 'application/json',
