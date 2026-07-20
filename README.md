@@ -8,7 +8,12 @@ with a Playwright test suite that exercises it end-to-end. Built to demonstrate 
 skills — test design and automation against a realistic app, not just unit tests against
 toy functions.
 
-The dashboard reports health for four operational domains, each backed entirely by mock
+The dashboard runs as two environments, `prod` and `stage` (a staging banner + title
+suffix is the only difference), and the same Playwright spec files run against both
+unmodified — one set of test logic, parameterized per environment via a shared fixture
+rather than forked per env. 
+
+The dashboard itself reports health for four operational domains, each backed entirely by mock
 data so both a healthy and a degraded state can be demonstrated on demand:
 
 - **Frontend Smoke Tests** — 48h heartbeat strip, run history, failure stack traces
@@ -26,8 +31,9 @@ Which state you see is driven by which mock account you log in as
 ```
 dashboard-server/   Next.js 14+ App Router app — the dashboard itself, fully mocked
 tests/              Playwright (TypeScript) suite — page objects, per-mock-user auth
-                    setup, ui/ and api/ specs — runs against the launched server
-.github/workflows/  Scheduled CI (every 4 hours + on demand) — publishes Allure reports
+                    setup, ui/ and api/ specs, prod/stage env fixtures — runs against
+                    the launched server(s)
+.github/workflows/  CI on every PR + scheduled (every 4 hours) — publishes Allure reports
 ```
 
 ## Live Allure reports
@@ -39,16 +45,13 @@ to GitHub Pages:
 - **UI Tests report:** https://cloffwang.github.io/quality-dashboard/ui-report/
 - **API Tests report:** https://cloffwang.github.io/quality-dashboard/api-report/
 
-See [designs/allure-technical-design.md](designs/allure-technical-design.md) for how
-reporting and the CI/Pages publish flow are wired up.
-
 ## Status
 
-- `dashboard-server/` — built and verified.
+- `dashboard-server/` — built and verified; runs as `prod` and `stage` environments.
 - `tests/` — backbone built and verified (page objects, auth setup, example specs across
-  ui/ and api/).
-- GitHub Actions CI — two scheduled workflows publishing live Allure reports to GitHub
-  Pages (badges above).
+  ui/ and api/), parameterized to run against both `prod` and `stage`.
+- GitHub Actions CI — `ui-tests`/`api-tests` run on every PR and on a schedule, publishing
+  live Allure reports to GitHub Pages (badges above).
 
 ## License
 

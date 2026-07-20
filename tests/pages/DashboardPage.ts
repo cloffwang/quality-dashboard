@@ -10,10 +10,12 @@ const DOMAIN_LABELS = [
 export class DashboardPage {
   readonly page: Page;
   readonly signOutButton: Locator;
+  readonly stagingBanner: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.signOutButton = page.getByRole('button', { name: 'Sign out' });
+    this.stagingBanner = page.getByTestId('staging-banner');
   }
 
   async goto() {
@@ -53,5 +55,17 @@ export class DashboardPage {
     for (const status of statuses) {
       expect(status.trim()).toBe('operational');
     }
+  }
+
+  async expectStagingBanner(visible: boolean) {
+    if (visible) {
+      await expect(this.stagingBanner).toBeVisible();
+    } else {
+      await expect(this.stagingBanner).toHaveCount(0);
+    }
+  }
+
+  async expectTitle(title: string) {
+    await expect(this.page).toHaveTitle(title);
   }
 }

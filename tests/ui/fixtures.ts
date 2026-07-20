@@ -1,4 +1,4 @@
-import { test as base } from '@playwright/test';
+import { test as base } from '../config/testEnv';
 import { parentSuite } from 'allure-js-commons';
 
 export const test = base.extend<{ autoAllureSuite: void }>({

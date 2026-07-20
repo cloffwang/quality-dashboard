@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "test": "playwright test",
-    "test:ui": "playwright test --project=ui",
-    "test:api": "playwright test --project=api",
+    "test:ui": "playwright test --project=ui-prod --project=ui-stage",
+    "test:api": "playwright test --project=api-prod --project=api-stage",
     "test:headed": "playwright test --headed",
     "report": "playwright show-report",
     "lint:allure": "node scripts/checkAllureDescriptions.mjs",
