@@ -46,7 +46,7 @@ The `ui-tests` and `api-tests` workflows publish live Allure reports to GitHub P
 ways to reach them:
 
 - **Latest run, one click:** https://cloffwang.github.io/quality-dashboard/ui-report/ and
-  .../api-report/ always redirect to the most recent report.
+  [.../api-report/](https://cloffwang.github.io/quality-dashboard/api-report/) always redirect to the most recent report.
 - **Weekly calendar, for browsing history:** the
   [landing page](https://cloffwang.github.io/quality-dashboard/) itself — every day's
   runs, UI and API tracked separately, each linking straight to that run's own report.
