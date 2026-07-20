@@ -6,15 +6,29 @@
 A portfolio project: a mock "Quality & Uptime Control Center" status dashboard, paired
 with a Playwright test suite that exercises it end-to-end. Built to demonstrate SDET
 skills — test design and automation against a realistic app, not just unit tests against
-toy functions.
+toy functions. Three things it's meant to show:
 
-The dashboard runs as two environments, `prod` and `stage` (a staging banner + title
-suffix is the only difference), and the same Playwright spec files run against both
-unmodified — one set of test logic, parameterized per environment via a shared fixture
-rather than forked per env. 
+1. **A bird's-eye view of test health, not just pass/fail noise.** The
+   [live report's weekly calendar](https://cloffwang.github.io/quality-dashboard/) lays
+   out every run, across both the UI and API suites, by day — the kind of at-a-glance
+   status an SDET or engineering manager actually wants, rather than digging through
+   individual CI logs one run at a time.
 
-The dashboard itself reports health for four operational domains, each backed entirely by mock
-data so both a healthy and a degraded state can be demonstrated on demand:
+   ![Run history calendar](docs/images/run-history-calendar.png)
+
+2. **Tests are organized into independent modules, one per feature area** — `ui/` and
+   `api/` as top-level suites, and within each, one spec set per domain (frontend smoke,
+   backend API, ETL, MCP). That separation is what lets the suite report status per
+   feature instead of one monolithic pass/fail, and the same pattern (a Playwright
+   project + page objects per area) scales cleanly to more services — more backend APIs,
+   more microservices — without restructuring the suite each time one gets added.
+3. **Test logic is isolated from environment.** The exact same spec files run unmodified
+   against `prod` and `stage` — everything environment-specific (base URL, staging
+   banner, title copy) is injected through one shared fixture rather than forked test
+   files, so pointing the suite at a new environment is a config change, not a rewrite.
+
+The dashboard itself reports health for four operational domains, each backed entirely by
+mock data so both a healthy and a degraded state can be demonstrated on demand:
 
 - **Frontend Smoke Tests** — 48h heartbeat strip, run history, failure stack traces
 - **Backend/Gateway API** — error rate, P95 latency, latency trend chart
@@ -26,6 +40,17 @@ Which state you see is driven by which mock account you log in as
 [dashboard-server/README.md](dashboard-server/README.md) for credentials and setup, and
 [tests/README.md](tests/README.md) for running the test suite.
 
+## Live Allure reports
+
+The `ui-tests` and `api-tests` workflows publish live Allure reports to GitHub Pages, two
+ways to reach them:
+
+- **Latest run, one click:** https://cloffwang.github.io/quality-dashboard/ui-report/ and
+  [.../api-report/](https://cloffwang.github.io/quality-dashboard/api-report/) always redirect to the most recent report.
+- **Weekly calendar, for browsing history:** the
+  [landing page](https://cloffwang.github.io/quality-dashboard/) itself — every day's
+  runs, UI and API tracked separately, each linking straight to that run's own report.
+
 ## Structure
 
 ```
@@ -35,15 +60,6 @@ tests/              Playwright (TypeScript) suite — page objects, per-mock-use
                     the launched server(s)
 .github/workflows/  CI on every PR + scheduled (every 4 hours) — publishes Allure reports
 ```
-
-## Live Allure reports
-
-The `ui-tests` and `api-tests` workflows publish live Allure reports (with run history)
-to GitHub Pages:
-
-- **Landing page:** https://cloffwang.github.io/quality-dashboard/
-- **UI Tests report:** https://cloffwang.github.io/quality-dashboard/ui-report/
-- **API Tests report:** https://cloffwang.github.io/quality-dashboard/api-report/
 
 ## Status
 
