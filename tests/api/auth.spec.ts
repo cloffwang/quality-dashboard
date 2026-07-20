@@ -47,7 +47,7 @@ test.describe('Auth.js API routes', () => {
         form: requestBody,
         maxRedirects: 0,
       });
-      await attachApiExchange({ method: 'POST', requestBody, response: callbackResponse });
+      await attachApiExchange({ method: 'POST', requestForm: requestBody, response: callbackResponse });
 
       expect(callbackResponse.status()).toBe(302);
     });
@@ -70,7 +70,7 @@ test.describe('Auth.js API routes', () => {
         form: requestBody,
         maxRedirects: 0,
       });
-      await attachApiExchange({ method: 'POST', requestBody, response: callbackResponse });
+      await attachApiExchange({ method: 'POST', requestForm: requestBody, response: callbackResponse });
 
       const location = callbackResponse.headers()['location'] ?? '';
       expect(location).toContain('error');
