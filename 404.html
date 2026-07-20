@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Report not available — Quality &amp; Uptime Control Center</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #0b0d12;
+      --fg: #e6e8ee;
+      --muted: #9aa3b2;
+      --card: #151822;
+      --border: #262b38;
+      --accent: #7dd3fc;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f6f7f9;
+        --fg: #14161c;
+        --muted: #565f6e;
+        --card: #ffffff;
+        --border: #e2e5ea;
+        --accent: #0369a1;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    main { max-width: 560px; width: 100%; }
+    h1 { font-size: 1.4rem; margin: 0 0 0.75rem; }
+    p { color: var(--muted); line-height: 1.5; margin: 0 0 1rem; }
+    .card {
+      padding: 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--card);
+      margin-bottom: 1.5rem;
+    }
+    a.back {
+      display: inline-block;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    a.back:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>This report isn't available due to Github Action Run history limits</h1>
+    <div class="card">
+      <p>
+        Each test run's Allure report is only kept online for a limited window — to keep
+        this site's storage bounded, older run snapshots are pruned automatically once
+        there are too many. If that window has since been reduced, or this link is simply
+        old, the specific run you're looking for may no longer be published, even though
+        it's still listed in GitHub's own Actions run history.
+      </p>
+      <p>
+        This isn't a bug in the link itself — it's expected behavior for how much history
+        gets retained at any given time.
+      </p>
+    </div>
+    <a class="back" href="./">← Back to the run history calendar</a>
+  </main>
+</body>
+</html>
