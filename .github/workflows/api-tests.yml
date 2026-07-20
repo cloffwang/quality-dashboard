@@ -72,6 +72,7 @@ jobs:
         run: |
           mkdir -p gh-pages
           cp .github/pages/index.html gh-pages/index.html
+          cp .github/pages/404.html gh-pages/404.html
 
       - name: Generate Allure report with history
         if: always() && github.event_name != 'pull_request'
