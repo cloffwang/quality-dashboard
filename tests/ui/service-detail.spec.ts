@@ -36,10 +36,14 @@ test.describe('service detail (healthy profile)', () => {
   });
 });
 
-test.describe('service detail (outage profile)', () => {
-  test.use({ storageState: 'playwright/.auth/outage.json' });
+const outageTest = test.extend({
+  storageState: async ({ env }, use) => {
+    await use(`playwright/.auth/outage-${env.name}.json`);
+  },
+});
 
-  test('frontend smoke test shows its failure stack trace', async ({ page }) => {
+outageTest.describe('service detail (outage profile)', () => {
+  outageTest('frontend smoke test shows its failure stack trace', async ({ page }) => {
     await description('In the outage profile, a failed frontend smoke test surfaces its assertion stack trace on the drill-down page.');
 
     const detail = new ServiceDetailPage(page);
@@ -55,7 +59,7 @@ test.describe('service detail (outage profile)', () => {
     });
   });
 
-  test('backend API shows the latency spike', async ({ page }) => {
+  outageTest('backend API shows the latency spike', async ({ page }) => {
     await description('In the outage profile, the Gateway API drill-down reflects the mock latency spike (4500ms).');
 
     const detail = new ServiceDetailPage(page);
@@ -70,7 +74,7 @@ test.describe('service detail (outage profile)', () => {
     });
   });
 
-  test('ETL pipeline shows its quarantined rows', async ({ page }) => {
+  outageTest('ETL pipeline shows its quarantined rows', async ({ page }) => {
     await description('In the outage profile, the ETL pipeline drill-down lists its quarantined rows from the failed validation run.');
 
     const detail = new ServiceDetailPage(page);
