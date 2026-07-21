@@ -46,6 +46,26 @@
       background: var(--card);
       margin-bottom: 1.5rem;
     }
+    ul.facts {
+      list-style: none;
+      margin: 0 0 1rem;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    ul.facts li {
+      display: flex;
+      gap: 0.6rem;
+      align-items: baseline;
+      color: var(--muted);
+    }
+    ul.facts li::before {
+      content: '→';
+      color: var(--accent);
+      flex: none;
+    }
+    ul.facts strong { color: var(--fg); }
     a.back {
       display: inline-block;
       color: var(--accent);
@@ -59,16 +79,15 @@
   <main>
     <h1>This report isn't available due to Github Action Run history limits</h1>
     <div class="card">
+      <p>The old run report was removed due to GitHub Pages storage limits:</p>
+      <ul class="facts">
+        <li><strong>200 runs</strong> kept per workflow</li>
+        <li><strong>~30 days</strong> of history, at the current every-4-hours schedule</li>
+        <li>previously <strong>20 runs</strong> (~3 days) — recently raised</li>
+      </ul>
       <p>
-        Each test run's Allure report is only kept online for a limited window — to keep
-        this site's storage bounded, older run snapshots are pruned automatically once
-        there are too many. If that window has since been reduced, or this link is simply
-        old, the specific run you're looking for may no longer be published, even though
-        it's still listed in GitHub's own Actions run history.
-      </p>
-      <p>
-        This isn't a bug in the link itself — it's expected behavior for how much history
-        gets retained at any given time.
+        This run has aged past that window and is no longer published, even though it's
+        still listed in GitHub's own Actions run history.
       </p>
     </div>
     <a class="back" href="/quality-dashboard/">← Back to the run history calendar</a>
