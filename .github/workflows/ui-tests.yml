@@ -76,7 +76,7 @@ jobs:
 
       - name: Generate Allure report with history
         if: always() && github.event_name != 'pull_request'
-        uses: simple-elf/allure-report-action@v1.14
+        uses: simple-elf/allure-report-action@v1.15
         with:
           allure_results: tests/allure-results
           gh_pages: gh-pages
